@@ -2,32 +2,30 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input"; // Importante: garantindo que o Input está importado
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Sparkles,
   TrendingUp,
   Target,
   Zap,
-  AlertCircle,
   CheckCircle,
+  Search,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { supabase } from "@/supabaseClient";
 import { useLocation } from "wouter";
 
 export default function AIInsights() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const [selectedResidue, setSelectedResidue] = useState("");
+  
+  // 1. Novo estado para a barra de pesquisa/chat
+  const [userQuery, setUserQuery] = useState("");
+  
   const [priceAnalysis, setPriceAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [residues, setResidues] = useState<any[]>([]);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -35,40 +33,57 @@ export default function AIInsights() {
     }
   }, [isAuthenticated, authLoading, navigate]);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const fetchResidues = async () => {
+      const { data, error } = await supabase
+        .from("residuos")
+        .select("id, nome, categoria, quantidade, preco_unidade")
+        .eq("status", "Disponível")
+        .order("id", { ascending: false });
+      if (!error && data) setResidues(data);
+    };
+    fetchResidues();
+  }, [isAuthenticated]);
+
   if (authLoading || !isAuthenticated) {
     return null;
   }
 
-  const residues = [
-    { id: 1, name: "Cavaco de Madeira", category: "Madeira", quantity: 500 },
-    { id: 2, name: "Sucata de Aço", category: "Metal", quantity: 1200 },
-    { id: 3, name: "Alumínio Reciclado", category: "Alumínio", quantity: 300 },
-  ];
-
+  // 2. Lógica adaptada para ler o que o usuário digitou
   const handleAnalyzePrice = async () => {
-    if (!selectedResidue) return;
+    if (!userQuery.trim()) return;
 
     setLoading(true);
+
+    // Como estamos no modo offline/simulador, vamos gerar um resultado genérico baseado no texto digitado
     setTimeout(() => {
+      // Tenta encontrar um resíduo no banco que combine com o que o usuário digitou, 
+      // ou usa valores genéricos se ele perguntar de algo que não existe.
+      const residuoEncontrado = residues.find(r => 
+        userQuery.toLowerCase().includes(r.nome.toLowerCase())
+      );
+
+      const precoBase = residuoEncontrado ? residuoEncontrado.preco_unidade : (Math.random() * 50 + 10);
+      const precoSugeridoCalculado = +(precoBase * 1.2).toFixed(2);
+      const nomeMaterial = residuoEncontrado ? residuoEncontrado.nome : "Material Pesquisado";
+      
       setPriceAnalysis({
-        residueName: "Cavaco de Madeira",
-        currentPrice: 15,
-        suggestedPrice: 18.5,
-        confidence: 0.87,
-        reasoning:
-          "Baseado em análise de mercado, demanda crescente e qualidade do material",
+        currentPrice: precoBase,
+        suggestedPrice: precoSugeridoCalculado,
+        confidence: 0.92,
+        reasoning: `Análise para "${userQuery}": Identificamos uma tendência de alta para ${nomeMaterial} devido à forte demanda no mercado de reciclagem neste trimestre.`,
+        estimatedRevenue: +(100 * precoSugeridoCalculado).toFixed(2),
+        estimatedProfit: +(100 * precoSugeridoCalculado * 0.45).toFixed(2),
+        co2Impact: 150,
         potentialBuyers: [
-          { name: "ABC Indústria", interest: "Alta", location: "São Paulo" },
-          { name: "XYZ Ltda", interest: "Média", location: "Belo Horizonte" },
-          { name: "Tech Industries", interest: "Alta", location: "Rio de Janeiro" },
-        ],
-        estimatedRevenue: 9250,
-        estimatedProfit: 3700,
-        co2Impact: 25,
-        marketTrend: "upward",
+          { name: "EcoDestino Soluções Ambientais", interest: "Alta", location: "São Paulo - SP" },
+          { name: "Recicla Brasil Indústria", interest: "Média", location: "Minas Gerais" },
+          { name: "Sustentare S/A", interest: "Alta", location: "Rio de Janeiro" }
+        ]
       });
       setLoading(false);
-    }, 1500);
+    }, 1200);
   };
 
   const aiRecommendations = [
@@ -119,6 +134,13 @@ export default function AIInsights() {
     },
   ];
 
+  // Permite enviar a mensagem apertando "Enter" no teclado
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleAnalyzePrice();
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -131,63 +153,59 @@ export default function AIInsights() {
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Análises inteligentes para maximizar seus lucros e impacto ambiental
+            Converse com a inteligência artificial sobre o mercado de resíduos
           </p>
         </div>
 
-        {/* Price Suggestion Tool */}
+        {/* 3. Nova Interface: Barra de Pesquisa / Chat */}
         <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              Sugestor de Preços com IA
+              Pergunte à IA
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Receba recomendações de preço baseadas em análise de mercado em tempo real
+              Descreva o que você deseja analisar. Ex: "Como está o preço do papelão hoje?"
             </p>
           </div>
 
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="residue" className="text-sm font-semibold">
-                Selecione um Resíduo
-              </Label>
-              <Select value={selectedResidue} onValueChange={setSelectedResidue}>
-                <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="Escolha um resíduo para análise" />
-                </SelectTrigger>
-                <SelectContent>
-                  {residues.map((residue) => (
-                    <SelectItem key={residue.id} value={residue.id.toString()}>
-                      {residue.name} ({residue.quantity} kg)
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Input
+                placeholder="Digite sua dúvida ou material para análise..."
+                value={userQuery}
+                onChange={(e) => setUserQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="flex-1"
+              />
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 whitespace-nowrap"
+                onClick={handleAnalyzePrice}
+                disabled={!userQuery.trim() || loading}
+              >
+                {loading ? (
+                  <Sparkles className="w-4 h-4 animate-pulse" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+                {loading ? "Analisando..." : "Pesquisar com IA"}
+              </Button>
             </div>
-
-            <Button
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
-              onClick={handleAnalyzePrice}
-              disabled={!selectedResidue || loading}
-            >
-              <Sparkles className="w-4 h-4" />
-              {loading ? "Analisando..." : "Analisar Preço com IA"}
-            </Button>
           </div>
 
+          {/* Resultados da Análise (Mantido igual, mas agora reage ao chat) */}
           {priceAnalysis && (
-            <div className="mt-8 space-y-6 border-t border-border pt-6">
+            <div className="mt-8 space-y-6 border-t border-border pt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-border">
-                  <p className="text-sm text-muted-foreground mb-1">Preço Atual</p>
+                  <p className="text-sm text-muted-foreground mb-1">Preço Base (Estimado)</p>
                   <p className="text-3xl font-bold text-foreground">
                     R$ {priceAnalysis.currentPrice.toFixed(2)}
                   </p>
                 </div>
                 <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
                   <p className="text-sm text-green-700 dark:text-green-300 mb-1">
-                    Preço Sugerido
+                    Preço Sugerido (IA)
                   </p>
                   <p className="text-3xl font-bold text-green-600 dark:text-green-400">
                     R$ {priceAnalysis.suggestedPrice.toFixed(2)}
@@ -210,7 +228,7 @@ export default function AIInsights() {
                   </div>
                   <div className="w-full bg-secondary rounded-full h-2">
                     <div
-                      className="bg-primary h-2 rounded-full transition-all"
+                      className="bg-primary h-2 rounded-full transition-all duration-1000"
                       style={{ width: `${priceAnalysis.confidence * 100}%` }}
                     ></div>
                   </div>
@@ -218,9 +236,9 @@ export default function AIInsights() {
 
                 <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                   <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                    Análise
+                    Resposta da Inteligência Artificial
                   </p>
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
                     {priceAnalysis.reasoning}
                   </p>
                 </div>
@@ -249,7 +267,7 @@ export default function AIInsights() {
 
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-3">
-                  Compradores em Potencial
+                  Compradores Interessados
                 </h3>
                 <div className="space-y-2">
                   {priceAnalysis.potentialBuyers.map((buyer: any, idx: number) => (
@@ -281,7 +299,7 @@ export default function AIInsights() {
         {/* AI Recommendations */}
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">
-            Recomendações de IA
+            Recomendações Automáticas
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {aiRecommendations.map((rec) => {

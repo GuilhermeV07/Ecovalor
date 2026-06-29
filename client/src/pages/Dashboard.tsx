@@ -33,7 +33,7 @@ export default function Dashboard() {
   const [totalCo2, setTotalCo2] = useState(0);
   const [totalAgua, setTotalAgua] = useState(0);
   const [categoryPieData, setCategoryPieData] = useState<any[]>([]);
-  const [monthlyEcoData, setMonthlyEcoData] = useState<any[]>([]);
+  const [monthlySalesData, setMonthlySalesData] = useState<any[]>([]);
   const [monthlyCo2Data, setMonthlyCo2Data] = useState<any[]>([]);
 
   const fetchDashboardData = async () => {
@@ -47,11 +47,11 @@ export default function Dashboard() {
         setTotalEstoque(estoque); setTotalValor(valor);
         setTotalCo2(estoque * 0.15); setTotalAgua(estoque * 4.2);
 
-        const monthlyMap: { [k: string]: { recuperado: number; desvioAterro: number; co2: number } } = {};
+        const monthlyMap: { [k: string]: { vendidos: number; disponiveis: number; receita: number; co2: number } } = {};
         const today = new Date();
         for (let i = 5; i >= 0; i--) {
           const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-          monthlyMap[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`] = { recuperado:0, desvioAterro:0, co2:0 };
+          monthlyMap[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`] = { vendidos:0, disponiveis:0, receita:0, co2:0 };
         }
         data.forEach(item => {
           if (!item.created_at) return;
@@ -59,8 +59,13 @@ export default function Dashboard() {
           const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
           if (monthlyMap[k]) {
             const q = Number(item.quantidade)||0;
-            monthlyMap[k].recuperado += q;
-            monthlyMap[k].desvioAterro += q * 0.85;
+            const preco = Number(item.preco_unidade)||0;
+            if (item.status === "Vendido") {
+              monthlyMap[k].vendidos += q;
+              monthlyMap[k].receita += q * preco;
+            } else {
+              monthlyMap[k].disponiveis += q;
+            }
             monthlyMap[k].co2 += q * 0.15;
           }
         });
@@ -68,10 +73,10 @@ export default function Dashboard() {
         Object.keys(monthlyMap).sort().forEach(k => {
           const [,m] = k.split("-");
           const lbl = MONTHS_BR[parseInt(m)-1];
-          eco.push({ month: lbl, recuperado: Math.round(monthlyMap[k].recuperado), desvioAterro: Math.round(monthlyMap[k].desvioAterro) });
+          eco.push({ month: lbl, vendidos: Math.round(monthlyMap[k].vendidos), disponiveis: Math.round(monthlyMap[k].disponiveis), receita: Math.round(monthlyMap[k].receita) });
           co2arr.push({ month: lbl, co2: Math.round(monthlyMap[k].co2) });
         });
-        setMonthlyEcoData(eco); setMonthlyCo2Data(co2arr);
+        setMonthlySalesData(eco); setMonthlyCo2Data(co2arr);
 
         const catMap: {[k:string]:number} = {};
         data.forEach(i => { const c=i.categoria||"Outros"; catMap[c]=(catMap[c]||0)+(Number(i.quantidade)||0); });
@@ -147,22 +152,22 @@ export default function Dashboard() {
 
           {/* Bar chart */}
           <div style={s.card}>
-            <div style={s.section}>Fluxo de Massa Circular</div>
-            <div style={s.sub}>Volume recuperado vs. Desvio de aterros industriais (kg)</div>
-            {monthlyEcoData.length === 0 ? (
+            <div style={s.section}>Vendas de Resíduos por Mês</div>
+            <div style={s.sub}>Quantidade vendida vs. disponível em estoque (kg)</div>
+            {monthlySalesData.length === 0 ? (
               <div style={{ height: 280, display: "flex", alignItems: "center", justifyContent: "center", color: "#A8B8A0", fontSize: "0.875rem" }}>
                 Sem dados ainda. Cadastre resíduos para ver o gráfico.
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={monthlyEcoData} barGap={4}>
+                <BarChart data={monthlySalesData} barGap={4}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F0F7EC" vertical={false} />
-                  <XAxis dataKey="month" stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
+                  <XAxis dataKey="month" stroke="#7bb45f" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#F0F7EC" }} />
                   <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "0.78rem", paddingTop: "12px" }} />
-                  <Bar dataKey="recuperado" name="Matéria-Prima Recuperada (kg)" fill="#2D6A1F" radius={[6,6,0,0]} />
-                  <Bar dataKey="desvioAterro" name="Desvio de Aterro (kg)" fill="#A8D99C" radius={[6,6,0,0]} />
+                  <Bar dataKey="vendidos" name="Vendidos (kg)" fill="#58864e" radius={[6,6,0,0]} />
+                  <Bar dataKey="disponiveis" name="Disponíveis (kg)" fill="#50c430" radius={[6,6,0,0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -214,8 +219,8 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={monthlyCo2Data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F7EC" vertical={false} />
-                <XAxis dataKey="month" stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
+                <XAxis dataKey="month" stroke="#7bbe5a" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#6eb64a" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "0.78rem", paddingTop: "12px" }} />
                 <Line type="monotone" dataKey="co2" name="CO₂ Mitigado (kg)" stroke="#2D6A1F" strokeWidth={2.5}
