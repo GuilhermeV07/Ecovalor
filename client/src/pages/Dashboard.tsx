@@ -99,8 +99,6 @@ export default function Dashboard() {
   const kpis = [
     { title: "Massa em Estoque", value: `${totalEstoque.toLocaleString("pt-BR")} kg`, change: "+12.5%", icon: Package, accent: "#2D6A1F", bg: "#E4EFE0" },
     { title: "Valor de Mercado", value: `R$ ${totalValor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, change: "+8.2%", icon: DollarSign, accent: "#3A8C6E", bg: "#E0F0EC" },
-    { title: "Água Poupada", value: `${Math.round(totalAgua).toLocaleString("pt-BR")} L`, change: "+14.1%", icon: Droplet, accent: "#1E6B9B", bg: "#DCEEF8" },
-    { title: "CO₂ Retido", value: `${totalCo2.toFixed(1)} kg`, change: "+18.7%", icon: Leaf, accent: "#5B9E3A", bg: "#EAF5E0" },
   ];
 
   const tooltipStyle = { backgroundColor: "#1A2410", border: "none", borderRadius: "10px", color: "#fff", fontSize: "0.82rem" };
@@ -124,7 +122,7 @@ export default function Dashboard() {
         </div>
 
         {/* KPIs */}
-        <div className="ev-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+        <div className="ev-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px", marginBottom: "24px", maxWidth: "700px" }}>
           {kpis.map(kpi => {
             const Icon = kpi.icon;
             return (
