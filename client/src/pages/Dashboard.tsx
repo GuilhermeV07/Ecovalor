@@ -115,7 +115,7 @@ export default function Dashboard() {
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#2D6A1F" }} />
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#2D6A1F", textTransform: "uppercase", letterSpacing: "0.08em" }}>Painel pessoal</span>
           </div>
-          <h1 style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.03em", margin: "0 0 4px" }}>
+          <h1 className="ev-page-title" style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.03em", margin: "0 0 4px" }}>
             Bem-vindo, <span style={{ color: "#2D6A1F" }}>{userDisplayName}</span>
           </h1>
           <p style={{ fontSize: "0.875rem", color: "#7A9870", margin: 0 }}>
@@ -124,7 +124,7 @@ export default function Dashboard() {
         </div>
 
         {/* KPIs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+        <div className="ev-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
           {kpis.map(kpi => {
             const Icon = kpi.icon;
             return (
@@ -148,7 +148,7 @@ export default function Dashboard() {
         </div>
 
         {/* Charts row 1 */}
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
+        <div className="ev-charts-row" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
 
           {/* Bar chart */}
           <div style={s.card}>
@@ -162,12 +162,12 @@ export default function Dashboard() {
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={monthlySalesData} barGap={4}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F0F7EC" vertical={false} />
-                  <XAxis dataKey="month" stroke="#7bb45f" fontSize={12} tickLine={false} axisLine={false} />
+                  <XAxis dataKey="month" stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#F0F7EC" }} />
                   <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "0.78rem", paddingTop: "12px" }} />
-                  <Bar dataKey="vendidos" name="Vendidos (kg)" fill="#58864e" radius={[6,6,0,0]} />
-                  <Bar dataKey="disponiveis" name="Disponíveis (kg)" fill="#50c430" radius={[6,6,0,0]} />
+                  <Bar dataKey="vendidos" name="Vendidos (kg)" fill="#2D6A1F" radius={[6,6,0,0]} />
+                  <Bar dataKey="disponiveis" name="Disponíveis (kg)" fill="#A8D99C" radius={[6,6,0,0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -219,8 +219,8 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={monthlyCo2Data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F7EC" vertical={false} />
-                <XAxis dataKey="month" stroke="#7bbe5a" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#6eb64a" fontSize={12} tickLine={false} axisLine={false} />
+                <XAxis dataKey="month" stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "0.78rem", paddingTop: "12px" }} />
                 <Line type="monotone" dataKey="co2" name="CO₂ Mitigado (kg)" stroke="#2D6A1F" strokeWidth={2.5}

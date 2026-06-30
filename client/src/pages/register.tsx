@@ -43,9 +43,9 @@ export default function Register() {
     <div style={{
       minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr",
       fontFamily: "'Inter', system-ui, sans-serif", background: "#F7F9F5"
-    }}>
+    }} className="ev-auth-split">
       {/* Lado esquerdo — visual */}
-      <div style={{
+      <div className="ev-auth-left" style={{
         background: "#1A2410", display: "flex", flexDirection: "column",
         justifyContent: "space-between", padding: "40px 48px", position: "relative", overflow: "hidden"
       }}>
@@ -111,7 +111,7 @@ export default function Register() {
       </div>
 
       {/* Lado direito — formulário */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 48px" }}>
+      <div className="ev-auth-right" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 48px" }}>
         <div style={{ width: "100%", maxWidth: "400px" }}>
 
           <div style={{ marginBottom: "36px" }}>

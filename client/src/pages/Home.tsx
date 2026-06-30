@@ -7,7 +7,7 @@ export default function Home() {
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", background: "#F7F9F5", minHeight: "100vh", color: "#1A2410" }}>
 
       {/* NAV */}
-      <nav style={{
+      <nav className="ev-nav" style={{
         position: "sticky", top: 0, zIndex: 50,
         background: "rgba(247,249,245,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid #D6E4CE", padding: "0 2rem",
@@ -19,10 +19,10 @@ export default function Home() {
             <path d="M10 22 Q16 8 22 22" stroke="#A8D99C" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
             <path d="M16 16 Q20 10 24 14" stroke="#F7F9F5" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
           </svg>
-          <span style={{ fontWeight: 700, fontSize: "1.2rem", letterSpacing: "-0.02em", color: "#1A2410" }}>EcoValor</span>
+          <span className="ev-nav-logo-text" style={{ fontWeight: 700, fontSize: "1.2rem", letterSpacing: "-0.02em", color: "#1A2410" }}>EcoValor</span>
         </div>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <button onClick={() => navigate("/login")} style={{
+          <button onClick={() => navigate("/login")} className="ev-nav-btn-secondary" style={{
             background: "none", border: "none", cursor: "pointer",
             fontWeight: 500, fontSize: "0.95rem", color: "#3A5C2A", padding: "8px 16px",
             borderRadius: "8px", transition: "background 0.2s"
@@ -42,10 +42,10 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section style={{ padding: "80px 2rem 60px", maxWidth: "1100px", margin: "0 auto" }}>
+      <section className="ev-hero" style={{ padding: "80px 2rem 60px", maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
           <div>
-            <div style={{
+            <div className="ev-hero-badge" style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
               background: "#E4EFE0", borderRadius: "100px", padding: "6px 14px",
               fontSize: "0.8rem", fontWeight: 600, color: "#2D6A1F", marginBottom: "24px",
@@ -54,7 +54,7 @@ export default function Home() {
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#2D6A1F", display: "inline-block" }}></span>
               Economia Circular Industrial
             </div>
-            <h1 style={{
+            <h1 className="ev-hero-title" style={{
               fontSize: "clamp(3.2rem, 7vw, 5.5rem)", fontWeight: 800,
               lineHeight: 1.1, letterSpacing: "-0.03em", marginBottom: "24px", color: "#1A2410"
             }}>
@@ -62,10 +62,10 @@ export default function Home() {
               <span style={{ color: "#2D6A1F" }}>Matéria-prima</span><br />
               de outro.
             </h1>
-            <p style={{ fontSize: "1.25rem", color: "#4A6040", lineHeight: 1.7, marginBottom: "40px", maxWidth: "580px" }}>
+            <p className="ev-hero-desc" style={{ fontSize: "1.25rem", color: "#4A6040", lineHeight: 1.7, marginBottom: "40px", maxWidth: "580px" }}>
               A EcoValor conecta indústrias que geram resíduos com empresas que precisam de matéria-prima — reduzindo custos e emissões ao mesmo tempo.
             </p>
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+            <div className="ev-hero-buttons" style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
               <button onClick={() => navigate("/register")} style={{
                 background: "#2D6A1F", color: "#fff", border: "none", cursor: "pointer",
                 fontWeight: 700, fontSize: "1rem", padding: "14px 28px",
@@ -99,7 +99,7 @@ export default function Home() {
       {/* MÉTRICAS */}
       <section style={{ background: "#1A2410", padding: "60px 2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px" }}>
+          <div className="ev-metrics-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px" }}>
             {[
               { n: "2.5M", unit: "kg", label: "Resíduos processados" },
               { n: "1.2K", unit: "ton", label: "CO₂ evitado" },
@@ -122,14 +122,14 @@ export default function Home() {
       </section>
 
       {/* COMO FUNCIONA */}
-      <section style={{ padding: "100px 2rem", maxWidth: "1100px", margin: "0 auto" }}>
+      <section className="ev-section" style={{ padding: "100px 2rem", maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{ marginBottom: "60px" }}>
           <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2D6A1F", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "12px" }}>Como funciona</div>
-          <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, letterSpacing: "-0.03em", color: "#1A2410", maxWidth: "500px", lineHeight: 1.15 }}>
+          <h2 className="ev-section-title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, letterSpacing: "-0.03em", color: "#1A2410", maxWidth: "500px", lineHeight: 1.15 }}>
             Do resíduo à<br />matéria-prima em 4 etapas
           </h2>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
+        <div className="ev-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
           {[
             { step: "01", emoji: "♻️", title: "Cadastre", desc: "Anuncie seus resíduos industriais com categoria, quantidade e preço" },
             { step: "02", emoji: "🤖", title: "A IA analisa", desc: "Nossa IA sugere o melhor preço e encontra compradores compatíveis" },
@@ -154,15 +154,15 @@ export default function Home() {
       </section>
 
       {/* FUNCIONALIDADES */}
-      <section style={{ background: "#F0F7EC", padding: "100px 2rem" }}>
+      <section className="ev-section" style={{ background: "#F0F7EC", padding: "100px 2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "60px" }}>
             <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2D6A1F", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "12px" }}>Plataforma completa</div>
-            <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, letterSpacing: "-0.03em", color: "#1A2410", lineHeight: 1.15 }}>
+            <h2 className="ev-section-title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, letterSpacing: "-0.03em", color: "#1A2410", lineHeight: 1.15 }}>
               Tudo num só lugar
             </h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+          <div className="ev-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
             {[
               { icon: "📊", title: "Marketplace Inteligente", desc: "Compre e venda resíduos com preços sugeridos por IA e matching automático de compradores.", tag: "Popular" },
               { icon: "📦", title: "Gestão de Estoque", desc: "Controle seu inventário de resíduos com rastreamento em tempo real e histórico completo.", tag: null },
@@ -196,8 +196,8 @@ export default function Home() {
       </section>
 
       {/* ECONOMIA CIRCULAR */}
-      <section style={{ padding: "100px 2rem", maxWidth: "1100px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
+      <section className="ev-section" style={{ padding: "100px 2rem", maxWidth: "1100px", margin: "0 auto" }}>
+        <div className="ev-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
           <div>
             <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2D6A1F", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "12px" }}>Nosso impacto</div>
             <h2 style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-0.03em", color: "#1A2410", marginBottom: "24px", lineHeight: 1.15 }}>
@@ -240,7 +240,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: "#1A2410", padding: "100px 2rem", textAlign: "center" }}>
+      <section className="ev-cta" style={{ background: "#1A2410", padding: "100px 2rem", textAlign: "center" }}>
         <div style={{ maxWidth: "600px", margin: "0 auto" }}>
           <div style={{ fontSize: "3rem", marginBottom: "20px" }}>🌿</div>
           <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", marginBottom: "16px", lineHeight: 1.15 }}>
@@ -266,7 +266,7 @@ export default function Home() {
       {/* FOOTER */}
       <footer style={{ background: "#111A0C", padding: "60px 2rem 32px", borderTop: "1px solid #2D3D24" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "48px", marginBottom: "48px" }}>
+          <div className="ev-footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "48px", marginBottom: "48px" }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
                 <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
@@ -299,7 +299,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div style={{ borderTop: "1px solid #2D3D24", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="ev-footer-bottom" style={{ borderTop: "1px solid #2D3D24", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <p style={{ fontSize: "0.8rem", color: "#3A5C2A" }}>© 2026 EcoValor. Todos os direitos reservados.</p>
             <div style={{ display: "flex", gap: "20px" }}>
               {["LinkedIn", "Instagram", "Twitter"].map(s => (

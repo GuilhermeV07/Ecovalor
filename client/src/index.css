@@ -170,3 +170,154 @@
     }
   }
 }
+/* ============================================
+   RESPONSIVIDADE MOBILE - EcoValor
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Navbar / Home */
+  .ev-nav {
+    padding: 0 1rem !important;
+  }
+  .ev-nav-logo-text {
+    font-size: 1rem !important;
+  }
+  .ev-nav-btn-secondary {
+    display: none !important;
+  }
+
+  /* Hero */
+  .ev-hero {
+    padding: 48px 1.25rem 40px !important;
+  }
+  .ev-hero-badge {
+    font-size: 0.7rem !important;
+  }
+  .ev-hero-title {
+    font-size: 2.1rem !important;
+    line-height: 1.15 !important;
+  }
+  .ev-hero-desc {
+    font-size: 1rem !important;
+  }
+  .ev-hero-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .ev-hero-buttons > button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Métricas faixa escura */
+  .ev-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1px !important;
+  }
+  .ev-metrics-grid > div {
+    border-right: none !important;
+    border-bottom: 1px solid #2D3D24 !important;
+    padding: 24px 16px !important;
+  }
+  .ev-metrics-grid > div:nth-child(2n) {
+    border-right: none !important;
+  }
+
+  /* Seções genéricas */
+  .ev-section {
+    padding: 60px 1.25rem !important;
+  }
+  .ev-section-title {
+    font-size: 1.8rem !important;
+  }
+
+  /* Grids de cards */
+  .ev-grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .ev-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .ev-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  /* Footer */
+  .ev-footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 28px !important;
+  }
+  .ev-footer-bottom {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+
+  /* CTA final */
+  .ev-cta {
+    padding: 60px 1.25rem !important;
+  }
+
+  /* Login / Register split screen */
+  .ev-auth-split {
+    grid-template-columns: 1fr !important;
+  }
+  .ev-auth-left {
+    display: none !important;
+  }
+  .ev-auth-right {
+    padding: 32px 1.25rem !important;
+  }
+
+  /* Dashboard / páginas internas */
+  .ev-kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .ev-charts-row {
+    grid-template-columns: 1fr !important;
+  }
+  .ev-page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+  .ev-page-title {
+    font-size: 1.5rem !important;
+  }
+
+  /* Tabela de resíduos -> scroll horizontal já existe via overflowX */
+  .ev-table-wrap table {
+    font-size: 0.78rem !important;
+  }
+
+  /* Marketplace filtros */
+  .ev-marketplace-filters {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .ev-marketplace-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ev-hero-title {
+    font-size: 1.75rem !important;
+  }
+  .ev-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .ev-metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .ev-metrics-grid > div {
+    border-bottom: 1px solid #2D3D24 !important;
+  }
+  .ev-footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
