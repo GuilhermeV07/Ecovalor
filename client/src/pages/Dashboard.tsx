@@ -6,7 +6,7 @@ import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
-import { Leaf, Droplet, Package, DollarSign, ArrowUpRight } from "lucide-react";
+import { Package, DollarSign, ArrowUpRight } from "lucide-react";
 import { useLocation } from "wouter";
 
 const COLORS = ["#2D6A1F", "#3A8C6E", "#5B9E3A", "#A8D99C", "#6366f1", "#f59e0b"];
@@ -30,11 +30,8 @@ export default function Dashboard() {
 
   const [totalEstoque, setTotalEstoque] = useState(0);
   const [totalValor, setTotalValor] = useState(0);
-  const [totalCo2, setTotalCo2] = useState(0);
-  const [totalAgua, setTotalAgua] = useState(0);
   const [categoryPieData, setCategoryPieData] = useState<any[]>([]);
   const [monthlySalesData, setMonthlySalesData] = useState<any[]>([]);
-  const [monthlyCo2Data, setMonthlyCo2Data] = useState<any[]>([]);
 
   const fetchDashboardData = async () => {
     if (!user?.id) return;
@@ -44,49 +41,59 @@ export default function Dashboard() {
       if (data && data.length > 0) {
         const estoque = data.reduce((s, i) => s + (Number(i.quantidade) || 0), 0);
         const valor = data.reduce((s, i) => s + ((Number(i.quantidade) || 0) * (Number(i.preco_unidade) || 0)), 0);
-        setTotalEstoque(estoque); setTotalValor(valor);
-        setTotalCo2(estoque * 0.15); setTotalAgua(estoque * 4.2);
+        setTotalEstoque(estoque);
+        setTotalValor(valor);
 
-        const monthlyMap: { [k: string]: { vendidos: number; disponiveis: number; receita: number; co2: number } } = {};
+        const monthlyMap: { [k: string]: { vendidos: number; disponiveis: number; receita: number } } = {};
         const today = new Date();
         for (let i = 5; i >= 0; i--) {
           const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-          monthlyMap[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`] = { vendidos:0, disponiveis:0, receita:0, co2:0 };
+          monthlyMap[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`] = { vendidos: 0, disponiveis: 0, receita: 0 };
         }
         data.forEach(item => {
           if (!item.created_at) return;
           const d = new Date(item.created_at);
           const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
           if (monthlyMap[k]) {
-            const q = Number(item.quantidade)||0;
-            const preco = Number(item.preco_unidade)||0;
+            const q = Number(item.quantidade) || 0;
+            const preco = Number(item.preco_unidade) || 0;
             if (item.status === "Vendido") {
               monthlyMap[k].vendidos += q;
               monthlyMap[k].receita += q * preco;
             } else {
               monthlyMap[k].disponiveis += q;
             }
-            monthlyMap[k].co2 += q * 0.15;
           }
         });
-        const eco: any[] = [], co2arr: any[] = [];
-        Object.keys(monthlyMap).sort().forEach(k => {
-          const [,m] = k.split("-");
-          const lbl = MONTHS_BR[parseInt(m)-1];
-          eco.push({ month: lbl, vendidos: Math.round(monthlyMap[k].vendidos), disponiveis: Math.round(monthlyMap[k].disponiveis), receita: Math.round(monthlyMap[k].receita) });
-          co2arr.push({ month: lbl, co2: Math.round(monthlyMap[k].co2) });
-        });
-        setMonthlySalesData(eco); setMonthlyCo2Data(co2arr);
 
-        const catMap: {[k:string]:number} = {};
-        data.forEach(i => { const c=i.categoria||"Outros"; catMap[c]=(catMap[c]||0)+(Number(i.quantidade)||0); });
-        const total = Object.values(catMap).reduce((a,b)=>a+b,0);
-        setCategoryPieData(Object.keys(catMap).map((k,i) => ({ name:k, value: total>0?Math.round((catMap[k]/total)*100):0, color:COLORS[i%COLORS.length] })));
+        const eco: any[] = [];
+        Object.keys(monthlyMap).sort().forEach(k => {
+          const [, m] = k.split("-");
+          const lbl = MONTHS_BR[parseInt(m) - 1];
+          eco.push({
+            month: lbl,
+            vendidos: Math.round(monthlyMap[k].vendidos),
+            disponiveis: Math.round(monthlyMap[k].disponiveis),
+            receita: Math.round(monthlyMap[k].receita),
+          });
+        });
+        setMonthlySalesData(eco);
+
+        const catMap: { [k: string]: number } = {};
+        data.forEach(i => { const c = i.categoria || "Outros"; catMap[c] = (catMap[c] || 0) + (Number(i.quantidade) || 0); });
+        const total = Object.values(catMap).reduce((a, b) => a + b, 0);
+        setCategoryPieData(Object.keys(catMap).map((k, i) => ({
+          name: k,
+          value: total > 0 ? Math.round((catMap[k] / total) * 100) : 0,
+          color: COLORS[i % COLORS.length],
+        })));
       } else {
-        setCategoryPieData([]); setMonthlyEcoData([]); setMonthlyCo2Data([]);
-        setTotalEstoque(0); setTotalValor(0); setTotalCo2(0); setTotalAgua(0);
+        setCategoryPieData([]);
+        setMonthlySalesData([]);
+        setTotalEstoque(0);
+        setTotalValor(0);
       }
-    } catch(e:any) { console.error(e.message); }
+    } catch (e: any) { console.error(e.message); }
   };
 
   useEffect(() => { if (isAuthenticated && user) fetchDashboardData(); }, [isAuthenticated, user]);
@@ -117,7 +124,7 @@ export default function Dashboard() {
             Bem-vindo, <span style={{ color: "#2D6A1F" }}>{userDisplayName}</span>
           </h1>
           <p style={{ fontSize: "0.875rem", color: "#7A9870", margin: 0 }}>
-            Painel de Desempenho ESG e Monitoramento de Impacto Ambiental
+            Painel de Desempenho e Monitoramento de Resíduos
           </p>
         </div>
 
@@ -145,7 +152,7 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Charts row 1 */}
+        {/* Charts row */}
         <div className="ev-charts-row" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "16px", marginBottom: "16px" }}>
 
           {/* Bar chart */}
@@ -205,23 +212,23 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Line chart */}
+        {/* Line chart - Receita */}
         <div style={s.card}>
-          <div style={s.section}>Prevenção de Emissões Atmosféricas — CO₂</div>
-          <div style={s.sub}>Pegada de carbono mitigada mensalmente (kg de CO₂ equivalente)</div>
-          {monthlyCo2Data.length === 0 ? (
+          <div style={s.section}>Receita de Vendas Mensal</div>
+          <div style={s.sub}>Valor total gerado pelas vendas de resíduos (R$)</div>
+          {monthlySalesData.length === 0 ? (
             <div style={{ height: 240, display: "flex", alignItems: "center", justifyContent: "center", color: "#A8B8A0", fontSize: "0.875rem" }}>
-              Sem dados históricos de carbono para a sua conta.
+              Nenhuma venda registrada ainda. Marque resíduos como Vendido para ver o gráfico.
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={monthlyCo2Data}>
+              <LineChart data={monthlySalesData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F7EC" vertical={false} />
                 <XAxis dataKey="month" stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={tooltipStyle} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v) => `R$ ${Number(v).toLocaleString("pt-BR")}`} />
                 <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "0.78rem", paddingTop: "12px" }} />
-                <Line type="monotone" dataKey="co2" name="CO₂ Mitigado (kg)" stroke="#2D6A1F" strokeWidth={2.5}
+                <Line type="monotone" dataKey="receita" name="Receita (R$)" stroke="#2D6A1F" strokeWidth={2.5}
                   dot={{ fill: "#2D6A1F", r: 4, strokeWidth: 0 }} activeDot={{ r: 6, fill: "#2D6A1F" }} />
               </LineChart>
             </ResponsiveContainer>
