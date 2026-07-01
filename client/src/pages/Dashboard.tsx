@@ -74,7 +74,7 @@ export default function Dashboard() {
           const [,m] = k.split("-");
           const lbl = MONTHS_BR[parseInt(m)-1];
           eco.push({ month: lbl, vendidos: Math.round(monthlyMap[k].vendidos), disponiveis: Math.round(monthlyMap[k].disponiveis), receita: Math.round(monthlyMap[k].receita) });
-          co2arr.push({ month: lbl, co2: Math.round(monthlyMap[k].co2) });
+          co2arr.push({ month: lbl, receita: Math.round(monthlyMap[k].receita) });
         });
         setMonthlySalesData(eco); setMonthlyCo2Data(co2arr);
 
@@ -205,28 +205,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Line chart */}
-        <div style={s.card}>
-          <div style={s.section}>Prevenção de Emissões Atmosféricas — CO₂</div>
-          <div style={s.sub}>Pegada de carbono mitigada mensalmente (kg de CO₂ equivalente)</div>
-          {monthlyCo2Data.length === 0 ? (
-            <div style={{ height: 240, display: "flex", alignItems: "center", justifyContent: "center", color: "#A8B8A0", fontSize: "0.875rem" }}>
-              Sem dados históricos de carbono para a sua conta.
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={monthlyCo2Data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F7EC" vertical={false} />
-                <XAxis dataKey="month" stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#A8B8A0" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "0.78rem", paddingTop: "12px" }} />
-                <Line type="monotone" dataKey="co2" name="CO₂ Mitigado (kg)" stroke="#2D6A1F" strokeWidth={2.5}
-                  dot={{ fill: "#2D6A1F", r: 4, strokeWidth: 0 }} activeDot={{ r: 6, fill: "#2D6A1F" }} />
-              </LineChart>
-            </ResponsiveContainer>
-          )}
-        </div>
+
 
       </div>
     </DashboardLayout>
