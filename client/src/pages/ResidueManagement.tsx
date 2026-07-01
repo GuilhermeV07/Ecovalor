@@ -124,12 +124,10 @@ export default function ResidueManagement() {
 
   const totalEstoque = residues.reduce((s, r) => s + r.quantidade, 0);
   const totalValue = residues.reduce((s, r) => s + r.quantidade * r.preco_unidade, 0);
-  const totalCo2 = residues.reduce((s, r) => s + r.quantidade * 0.15, 0);
 
   const kpis = [
     { label: "Total em Estoque", value: `${totalEstoque.toLocaleString("pt-BR")} kg`, icon: Package, color: "#2D6A1F", bg: "#E4EFE0" },
     { label: "Valor Total", value: `R$ ${totalValue.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}`, icon: TrendingUp, color: "#3A8C6E", bg: "#E0F0EC" },
-    { label: "CO₂ Evitado", value: `${totalCo2.toFixed(1)} kg`, icon: null, emoji: "♻️", color: "#5B9E3A", bg: "#EAF5E0" },
   ];
 
   return (
@@ -258,7 +256,7 @@ export default function ResidueManagement() {
         </div>
 
         {/* KPI Cards */}
-        <div className="ev-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "24px" }}>
+        <div className="ev-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px", marginBottom: "24px", maxWidth: "700px" }}>
           {kpis.map(k => (
             <div key={k.label} style={{ background: "#fff", borderRadius: "16px", border: "1px solid #E4EFE0", padding: "24px", boxShadow: "0 1px 4px rgba(45,106,31,0.06)", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
